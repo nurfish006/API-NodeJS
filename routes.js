@@ -1,9 +1,9 @@
 import express from 'express';
 import { StatusCodes } from 'http-status-codes';
 
-
+import userService from './src/services/user.service.js';
 const router = express.Router();
-const port=8000;
+
 
 
 const STATUS={
@@ -11,17 +11,24 @@ const STATUS={
     failure:'NO'
 }
 
-router.get('/a',(req,res)=>{
+router.get('/hello',(req,res)=>{
     res.send(' Hello Nura!');
 });
 
 router.post('/add', (req,res) =>{
     try {
-        const data = [];
-        data.push(req.body);
-        res.status(StatusCodes.CREATED).send({
+        const {body: user} =req;
+
+        if(!user.name){
+        return res.status(StatusCodes.BAD_REQUEST).send({
+        status:STATUS.failure,
+        error:'Name required'
+          }
+        }
+    userService.addUser();
+    res.status(StatusCodes.CREATED).send({
           status:STATUS.success,
-          data: req.body
+          data: user
     });
 }catch(error){
     res.status(StatusCodes.BAD_REQUEST).send({
